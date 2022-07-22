@@ -1,5 +1,21 @@
 <?php
 /*
+    abstract ->   Merupakan sebuah kelas yang tidak dapat di instansiasi
+                - Mendefinisikan interface untuk class turunannya
+                - Berperan sebagai kerangka dasar untuk turunanya
+                - HARUS memiliki setidaknya 1 Method (function) abstract, erat kaitanya dengan inheritance (pewarisan)
+                - Digunakan di dalam pewarisan(inheritance) untuk menggunakan/implementasikan method abstract dengan 
+                  nama method yang sama pada class turunannya
+                - Isi method abstract pada class abstract PARENT HARUS tidak ada isinya, karna isinya nanti akan di ketik
+                  pada class-class turunannya
+                - Semua class turunan harus MENGIMPLEMENTASIKAN semua METHOD ABSTRACT yang ada pada class abstrack PARENTnya
+                - class abstract boleh memimiliki property/method reguler (minimal harus ada 1 method abstract)
+                - class abstract boleh memimiliki property/static method (minimal harus ada 1 method abstract)
+
+*/
+
+
+/*
     Visibility (Acces Modifier) -> Keyword  - PUBLIC
                                             - PROTECTED
                                             - PRIVATE
@@ -11,13 +27,13 @@
 */
 
 //class di sebutjuga object
-class Chelsea {
+abstract class Chelsea {
     // pada oop variabel di sebut properties
-    private   $player,
+    public    $player,
               $nopunggung,
-              $stamina,
-              $value = 2000,
-              $diskon = 0;   
+              $stamina;
+    private $value = 200;
+    protected $diskon = 0;   
 
     /* __construct merupakan sebuah Method khusus pada class yang OTOMATIS di jalankan ketika sebuah class
      di instance dengan keyword NEW untuk membuat sebuah object dari sebuah class atau 
@@ -30,78 +46,21 @@ class Chelsea {
         $this-> stamina = $stamina;
         
     }
-
-    //getter
-    public function getPlayer()
-    {
-        return $this->player;
-    }
-
-    //setter
-    public function setPlayer($player)
-    {
-        return $this->player = $player;
-    }
-
-    //getter
-    public function getNopunggung()
-    {
-        return $this->nopunggung;
-    }
-
-    //setter
-    public function setNopunggung($nopunggung)
-    {
-        return $this->nopunggung = $nopunggung;
-    }
-
-    //getter
-    public function getStamina()
-    {
-        return $this->stamina;
-    }
-
-    //setter
-    public function setStamina($stamina)
-    {
-        return $this->stamina = $stamina;
-    }
-
-    //getter
-    public function getDiskon()
-    {
-        return $this->diskon;
-    }
-
-    //setter
-    public function setDiskon($diskon)
-    {
-        return $this->diskon=$diskon;
-    }
-
-    //getter
+    //Jika di oop di sebut method
     public function getValue()
     {
         return $this->value - ($this->value * $this->diskon/100);
     }
-   
-    //Jika di oop di sebut method
-    public function getLabel()
+
+    //METHOD ABSTRACT
+    abstract public function getLabel();
+
+    public function getInfo()
     {
         return " Name : $this->player, No Punggung : $this->nopunggung, Stamina : $this->stamina";
     }
-
-
 }
 
-// OBJECT TYPE / data type fungsi class pada contoh ini hanya berfungsi untuk mencetak saja
-/*class infoPlayer{
-        //data type
-    public function cetak(Chelsea $chelsea){
-        $str = "{$chelsea->getLabel()}" ;
-        return $str;
-    }
-}*/
 
 // inheritance == PEWARISAN (keyword extends)
 class trofiChamp extends Chelsea{
@@ -115,11 +74,16 @@ class trofiChamp extends Chelsea{
 
     public function getLabel()
     {
-        $str = parent::getLabel()." - Jumlah Trofi Champ : {$this->jmlchamp}";
+        $str = $this->getInfo()." - Jumlah Trofi Champ : {$this->jmlchamp}";
         return $str;
     }
 
+    public function setDiskon($diskon)
+    {
+        $this->diskon=$diskon;
+    }
 }
+
 
 class trofiPremier extends Chelsea{
     private $jmlpl;
@@ -132,11 +96,33 @@ class trofiPremier extends Chelsea{
 
       public function getLabel()
     {
-        $str = parent::getLabel()."- Jumlah Trofi PL : {$this->jmlpl}";
+        $str = $this->getInfo()."- Jumlah Trofi PL : {$this->jmlpl}";
         return $str;
     }
 }
 
+// OBJECT TYPE / data type fungsi class pada contoh ini hanya berfungsi untuk mencetak saja
+class infoPlayer{
+    //data type
+public $daftarScuat = [];
+
+public function tambahScuat(Chelsea $c)
+{
+    $this->daftarScuat [] = $c;
+    
+}
+
+public function cetak(){
+    $str = "DAFTAR SCUAT <br>" ;
+
+    foreach($this->daftarScuat as $ts)
+    {
+        $str .=" {$ts->getLabel()} <br>";
+    }
+
+    return $str;
+}
+}
 //membuat instance atau object baru dari sebuah class dengan keyword "NEW"
 //$chelsea1 = new Chelsea("H.Ziyech",11,99,2);
 //$chelsea2 = new Chelsea("Mason",10,100);
@@ -147,24 +133,10 @@ class trofiPremier extends Chelsea{
 $infochamp = new trofiChamp("H.Ziyech",11,99,2);
 $infoprem = new trofiPremier("Mason",10,100,6,);
 
+$infoPlay = new infoPlayer();
+$infoPlay->tambahScuat($infochamp);
+$infoPlay->tambahScuat($infoprem);
 
-echo $infochamp->getLabel();
-echo "<br>";
-echo $infoprem->getLabel();
-echo "<br>";
-
-$infochamp->setDiskon(15);
-echo "Market Value Champion: ".$infochamp->getValue();
-echo "<br>";
-
-$infoprem->setDiskon(99);
-echo "Market Value Premier League : ".$infoprem->getValue();
-echo "<br>";
-
-echo $infochamp->getDiskon();
-echo "<br>";
-
-echo ("Name : ".$infoprem->setPlayer("Havert")." No Punggung :". $infoprem->setNopunggung(17));
-
+echo $infoPlay->cetak();
 
 ?>
